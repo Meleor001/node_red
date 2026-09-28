@@ -2,6 +2,8 @@ const express = require("express")
 const app = express();
 const PORT = 3000;
 
+app.use(express.json())
+
 
 const students = [
     { id: 1, name: "Анна Иванова", age: 19, group: "ИС-21" },
@@ -45,11 +47,31 @@ app.get("/students/:id" , (req , res)=>{
     let student = students.find((stud)=>{
         return stud.id == req.params.id
     })
+    if(!student){
+        return res.status(404).json({error: "Пользователь не найден!"})
+    }
     res.send(student)    
     
+})
+
+app.post('/student' , (req , res)=>{
+    console.log(req.body);
+    const {name , age} = req.body
+
+    const newStudent = {
+        id: students.length+1,
+        name: name,
+        age: age
+    }
+
+    students.push(newStudent)
+    // res.status(200).json("Регистрация прошла успешно!" , newStudent)
+    res.send(students)
 })
 
 app.listen(PORT, () => {
     console.log("Сервер успешно запущен!");
 
 });
+
+
